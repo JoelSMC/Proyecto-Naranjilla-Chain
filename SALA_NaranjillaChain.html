@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaranjillaChain · Sala de Operaciones General · Centro de control del proyecto de agroexportación trazable.">
+<title>NaranjillaChain · Sala de Operaciones General</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--forest:#14452F;--amber:#F59E0B;--cream:#FAF9F6;--ink:#1E293B}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#F1F5F9;color:var(--ink);margin:0;overflow-x:hidden}
+.font-serif-editorial{font-family:'Playfair Display',Georgia,serif}.mono{font-family:'JetBrains Mono',monospace}
+[x-cloak]{display:none!important}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:.9rem;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.mod-btn{transition:.25s;position:relative;overflow:hidden}
+.mod-btn:hover{transform:translateY(-5px);box-shadow:0 22px 40px -18px rgba(20,69,47,.35)}
+.pill{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:999px;font-size:10px;font-weight:800}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#B45309}
+.eyebrow::before{content:'';width:26px;height:2px;background:var(--amber);display:block}
+@keyframes latido{0%,100%{opacity:1}50%{opacity:.35}}.live{animation:latido 1.6s ease-in-out infinite}
+@media print{.no-print{display:none!important}}
+</style>
+</head>
+<body x-data="salaApp()" x-init="init()" @keydown.escape.window="cerrarVista()">
+
+<!-- TOAST -->
+<div x-show="toast.show" x-transition x-cloak class="no-print fixed bottom-5 right-5 z-[300] bg-white border border-emerald-200 shadow-2xl rounded-xl px-4 py-3 max-w-sm">
+ <p class="text-xs font-extrabold text-forest" x-text="toast.title"></p><p class="text-[11px] text-slate-600 mt-1" x-text="toast.msg"></p>
+</div>
+
+<!-- BARRA SUPERIOR -->
+<div class="bg-forest-dark text-white/80 text-[11px] no-print"><div class="max-w-[1400px] mx-auto px-5 h-8 flex items-center justify-between">
+ <div class="flex items-center gap-2 font-semibold">
+  <svg class="w-5 h-3.5 rounded-[2px]" viewBox="0 0 60 40" aria-label="Bandera del Ecuador con escudo">
+   <rect width="60" height="20" fill="#FFDD00"/><rect y="20" width="60" height="10" fill="#034EA2"/><rect y="30" width="60" height="10" fill="#ED1C24"/>
+   <g transform="translate(30 20)"><path d="M0 -12 C-4 -14 -8 -13 -10 -11 C-7 -11 -5 -10 -3 -8 L0 -10 L3 -8 C5 -10 7 -11 10 -11 C8 -13 4 -14 0 -12Z" fill="#2B1B12"/>
+   <path d="M-9 -8 L9 -8 L9 1 C9 7 4 11 0 13 C-4 11 -9 7 -9 1 Z" fill="#034EA2" stroke="#F2C200" stroke-width="1"/>
+   <circle cx="0" cy="-4" r="3" fill="#F2C200"/><rect x="-9" y="-1" width="18" height="1.5" fill="#fff"/>
+   <path d="M-8 2 Q0 -1 8 2 L8 5 Q0 3 -8 5 Z" fill="#6BAED6"/>
+   <path d="M-11 5 Q-13 9 -10 12" stroke="#2F7D32" stroke-width="1.2" fill="none"/>
+   <path d="M11 5 Q13 9 10 12" stroke="#2F7D32" stroke-width="1.2" fill="none"/></g>
+  </svg>
+  <span>República del Ecuador · Comercio Electrónico · Gustavo Terán · Sebastián Moreta · 25 de noviembre de 2026</span>
+ </div>
+ <span class="hidden sm:flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live"></span> Sala de operaciones activa</span>
+</div></div>
+
+<!-- HEADER -->
+<header class="bg-white/95 backdrop-blur sticky top-0 z-40 border-b border-slate-200 shadow-sm">
+ <div class="max-w-[1400px] mx-auto px-5 h-16 flex items-center justify-between">
+  <button @click="cerrarVista()" class="flex items-center gap-3 text-left group">
+   <div class="w-9 h-9 rounded-xl bg-forest text-amber-400 flex items-center justify-center shadow group-hover:bg-forest-light transition"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></div>
+   <div><p class="font-serif-editorial font-extrabold text-base leading-none text-forest">Naranjilla<span class="text-amber-500">Chain</span></p><p class="text-[9px] uppercase tracking-[.16em] text-slate-500">Sala de Operaciones General</p></div>
+  </button>
+  <div class="flex items-center gap-2">
+   <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 live"></span> Sistema integrado</div>
+   <button @click="cerrarVista()" class="px-3.5 py-2 rounded-lg bg-forest hover:bg-forest-light text-white text-[11px] font-bold flex items-center gap-1.5 transition"><i data-lucide="home" class="w-3.5 h-3.5"></i> Sala General</button>
+  </div>
+ </div>
+</header>
+
+<!-- ===================== SALA ===================== -->
+<main x-show="!vistaActual" x-cloak class="max-w-[1400px] mx-auto px-5 py-8 space-y-10">
+
+ <!-- HERO -->
+ <section class="relative rounded-2xl overflow-hidden bg-forest-dark text-white">
+  <div class="absolute inset-0 opacity-20" style="background-image:radial-gradient(circle at 10% 20%,#F59E0B 0,transparent 34%),radial-gradient(circle at 88% 80%,#34D399 0,transparent 40%)"></div>
+  <div class="relative grid lg:grid-cols-12 gap-8 p-7 lg:p-10 items-center">
+   <div class="lg:col-span-8 space-y-4">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] font-extrabold uppercase tracking-widest"><i data-lucide="command" class="w-3.5 h-3.5 text-amber-400"></i> Centro de control unificado · 9 áreas</div>
+    <h1 class="font-serif-editorial text-3xl sm:text-5xl font-extrabold leading-tight">Sala de Operaciones <span class="text-amber-400">NaranjillaChain</span></h1>
+    <p class="text-sm text-white/80 max-w-3xl leading-relaxed">Un solo lugar para explorar el proyecto completo: desde la elección del tema y la estrategia de marca, hasta la página web, la tienda B2B, el ERP, el CRM, el smart contract verificado y el gemelo digital. <strong class="text-white">La misma empresa, el mismo producto y la misma promesa</strong>: "Cada caja cuenta su origen".</p>
+    <div class="flex flex-wrap gap-2 pt-1">
+     <span class="pill bg-white/10 text-white/90 border border-white/15"><i data-lucide="sprout" class="w-3 h-3 text-amber-400"></i> Origen amazónico</span>
+     <span class="pill bg-white/10 text-white/90 border border-white/15"><i data-lucide="link-2" class="w-3 h-3 text-amber-400"></i> Blockchain verificada</span>
+     <span class="pill bg-white/10 text-white/90 border border-white/15"><i data-lucide="scan-line" class="w-3 h-3 text-amber-400"></i> Gemelo digital activo</span>
+    </div>
+   </div>
+   <div class="lg:col-span-4">
+    <div class="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-5 space-y-3">
+     <p class="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Ficha del proyecto</p>
+     <div class="space-y-2 text-[11px]">
+      <div class="flex justify-between"><span class="text-white/60">Empresa</span><strong>NaranjillaChain Agroexport S.A.</strong></div>
+      <div class="flex justify-between"><span class="text-white/60">Producto</span><strong>Naranjilla amazónica</strong></div>
+      <div class="flex justify-between"><span class="text-white/60">Origen</span><strong>Zamora-Chinchipe · Pastaza</strong></div>
+      <div class="flex justify-between"><span class="text-white/60">Mercados</span><strong>Europa · EE. UU. · Asia</strong></div>
+      <div class="flex justify-between"><span class="text-white/60">Áreas integradas</span><strong>9 de 9</strong></div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- KPIs -->
+ <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="card p-5 border-l-4 border-l-emerald-500"><p class="text-[10px] font-bold text-slate-500 uppercase">Propuesta de valor</p><p class="font-serif-editorial text-2xl font-extrabold text-forest mt-1">5 promesas</p><p class="text-[10px] text-slate-500 mt-1">Verificables y con evidencia</p></div>
+  <div class="card p-5 border-l-4 border-l-amber-500"><p class="text-[10px] font-bold text-slate-500 uppercase">Modelo de gestión</p><p class="font-serif-editorial text-2xl font-extrabold text-forest mt-1">3 procesos</p><p class="text-[10px] text-slate-500 mt-1">ISO 9001 + SCOR</p></div>
+  <div class="card p-5 border-l-4 border-l-sky-500"><p class="text-[10px] font-bold text-slate-500 uppercase">Sistemas digitales</p><p class="font-serif-editorial text-2xl font-extrabold text-forest mt-1">ERP + CRM</p><p class="text-[10px] text-slate-500 mt-1">13 módulos operativos</p></div>
+  <div class="card p-5 border-l-4 border-l-violet-500"><p class="text-[10px] font-bold text-slate-500 uppercase">Blockchain</p><p class="font-serif-editorial text-2xl font-extrabold text-forest mt-1">Verified ✓</p><p class="text-[10px] text-slate-500 mt-1">Sepolia · Etherscan</p></div>
+ </section>
+
+ <!-- BOTONES DE LOS 9 PUNTOS -->
+ <section class="space-y-5">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+   <div><span class="eyebrow">Accesos principales</span><h2 class="font-serif-editorial text-2xl sm:text-3xl font-bold text-forest mt-2">Seleccione el área que desea explorar</h2><p class="text-xs text-slate-500 mt-1">Cada botón abre el trabajo completo de esa área dentro de la sala.</p></div>
+   <span class="pill pill-slate">9 áreas disponibles</span>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+   <template x-for="(m,i) in modulos" :key="m.id">
+    <button @click="abrir(m)" class="mod-btn card p-6 text-left border-t-4" :class="m.borde">
+     <div class="flex items-start justify-between">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center" :class="m.iconBg"><i :data-lucide="m.icono" class="w-5 h-5"></i></div>
+      <span class="text-[10px] font-extrabold text-slate-300" x-text="'0'+(i+1)"></span>
+     </div>
+     <h3 class="font-serif-editorial text-lg font-bold text-forest mt-4" x-text="m.titulo"></h3>
+     <p class="text-[11px] text-slate-600 mt-2 leading-relaxed min-h-[48px]" x-text="m.desc"></p>
+     <div class="flex flex-wrap gap-1.5 mt-3"><template x-for="tag in m.tags" :key="tag"><span class="pill pill-slate" x-text="tag"></span></template></div>
+     <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+      <span class="text-[10px] font-bold text-slate-400" x-text="m.archivoLabel"></span>
+      <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-600">Abrir <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+     </div>
+    </button>
+   </template>
+  </div>
+ </section>
+
+ <!-- INTEGRACION -->
+ <section class="card p-6 space-y-4">
+  <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-forest text-amber-400 flex items-center justify-center"><i data-lucide="workflow" class="w-5 h-5"></i></div><div><p class="text-[10px] font-extrabold uppercase tracking-widest text-amber-600">Hilo conductor</p><h3 class="font-serif-editorial text-lg font-bold text-forest">Cómo se conectan las 9 áreas</h3></div></div>
+  <div class="flex flex-wrap items-center gap-2 text-[11px] font-bold text-slate-700">
+   <template x-for="(p,i) in flujo" :key="i"><div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg text-white" :class="p.color" x-text="p.nombre"></span><template x-if="i<flujo.length-1"><i data-lucide="arrow-right" class="w-3.5 h-3.5 text-amber-500"></i></template></div></template>
+  </div>
+  <p class="text-xs text-slate-600 leading-relaxed">La estrategia define la promesa, la web y la tienda la ejecutan, el ERP y el CRM la gestionan, el smart contract la garantiza y el gemelo digital la demuestra. Todo gira alrededor de la misma empresa y del mismo producto.</p>
+ </section>
+
+ <div class="callout rounded-xl p-6" style="border-left:4px solid var(--amber);background:#FFFBEB"><p class="font-serif-editorial text-xl font-bold text-forest">"Cada caja cuenta su origen."</p><p class="text-xs text-amber-900 mt-1">Promesa que articula los nueve puntos del proyecto.</p></div>
+</main>
+
+<!-- ===================== VISOR ===================== -->
+<section x-show="vistaActual" x-cloak class="no-print fixed inset-0 z-[80] bg-slate-900 flex flex-col" style="top:0">
+ <div class="h-14 bg-forest-dark text-white flex items-center justify-between px-4 shrink-0 border-b border-white/10">
+  <div class="flex items-center gap-3 min-w-0">
+   <button @click="cerrarVista()" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition shrink-0"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+   <div class="min-w-0"><p class="text-[9px] uppercase tracking-widest text-amber-400">Sala de operaciones / <span x-text="vistaActual && vistaActual.titulo"></span></p><h2 class="font-serif-editorial text-base font-bold truncate" x-text="vistaActual && vistaActual.titulo"></h2></div>
+  </div>
+  <div class="flex items-center gap-2">
+   <a :href="vistaActual ? vistaActual.archivo : '#'" target="_blank" class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold flex items-center gap-1.5 transition"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Abrir en nueva pestaña</span></a>
+   <button @click="cerrarVista()" class="px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-bold transition">Volver a sala</button>
+  </div>
+ </div>
+ <div class="flex-1 relative bg-white">
+  <iframe :src="urlFrame" @load="onFrameLoad()" class="w-full h-full border-0" title="Contenido del módulo"></iframe>
+  <div x-show="cargando" x-cloak class="absolute inset-0 bg-white flex items-center justify-center"><div class="text-center space-y-3"><i data-lucide="loader-circle" class="w-8 h-8 text-forest mx-auto animate-spin"></i><p class="text-xs text-slate-500">Cargando módulo...</p></div></div>
+ </div>
+</section>
+
+<script>
+function salaApp(){
+ return {
+  vistaActual:null, urlFrame:'', cargando:false, toast:{show:false,title:'',msg:''}, _t:null, _seq:0,
+  modulos:[
+   {id:'tema',titulo:'El Tema',archivo:'bloque1_naranjillachain_tema_branding_gestion.html',hash:'parte1',archivoLabel:'Fundamentos estratégicos',icono:'target',iconBg:'bg-emerald-100 text-emerald-700',borde:'border-t-emerald-600',desc:'Por qué se eligió la naranjilla amazónica, el problema, la justificación, los objetivos y la propuesta de valor.',tags:['Contexto','Problema','Propuesta de valor'],accion:'hash'},
+   {id:'branding',titulo:'Estrategia y Branding',archivo:'bloque1_naranjillachain_tema_branding_gestion.html',hash:'parte2',archivoLabel:'Fundamentos estratégicos',icono:'sparkles',iconBg:'bg-amber-100 text-amber-700',borde:'border-t-amber-500',desc:'Los 4 pilares de la marca: visibilidad positiva, bonding, energía y valores; identidad y cliente objetivo.',tags:['4 pilares','Identidad','Cliente'],accion:'hash'},
+   {id:'gestion',titulo:'Modelo de Gestión',archivo:'bloque1_naranjillachain_tema_branding_gestion.html',hash:'parte3',archivoLabel:'Fundamentos estratégicos',icono:'workflow',iconBg:'bg-sky-100 text-sky-700',borde:'border-t-sky-600',desc:'Modelo por procesos con ISO 9001 y SCOR: gobernantes, agregadores de valor y habilitantes.',tags:['ISO 9001','SCOR','3 procesos'],accion:'hash'},
+   {id:'web',titulo:'Página web',archivo:'p_gina_web_corporativa_institucional_naranjillachain.html',hash:'inicio',archivoLabel:'Presencia digital',icono:'globe',iconBg:'bg-violet-100 text-violet-700',borde:'border-t-violet-600',desc:'Sitio corporativo institucional con todos los botones activos, productos y canales de contacto.',tags:['Corporativo','Productos','Contacto'],accion:'hash'},
+   {id:'tienda',titulo:'Tienda Virtual',archivo:'p_gina_web_corporativa_institucional_naranjillachain.html#tienda',hash:'',archivoLabel:'Presencia digital',icono:'shopping-bag',iconBg:'bg-rose-100 text-rose-700',borde:'border-t-rose-500',desc:'Catálogo mayorista B2B con cotización FOB/CIF, carrito y checkout con 4 interfaces de pago reales.',tags:['B2B','Checkout','Pagos'],accion:'none'},
+   {id:'erp',titulo:'ERP',archivo:'bloque3_naranjillachain_erp_crm_profesional.html#erp',hash:'',archivoLabel:'Sistemas de gestión',icono:'factory',iconBg:'bg-indigo-100 text-indigo-700',borde:'border-t-indigo-600',desc:'Sala General y 7 áreas de operación: productores, lotes, inventario, pedidos, embarques y finanzas.',tags:['Operación','Datos','Reportes'],accion:'none'},
+   {id:'crm',titulo:'CRM',archivo:'bloque3_naranjillachain_erp_crm_profesional.html#crm',hash:'',archivoLabel:'Sistemas de gestión',icono:'users',iconBg:'bg-cyan-100 text-cyan-700',borde:'border-t-cyan-600',desc:'Gestión comercial: clientes, contactos, oportunidades, pipeline Kanban, campañas y tickets.',tags:['Clientes','Pipeline','Ventas'],accion:'none'},
+   {id:'contrato',titulo:'Smart Contract',archivo:'bloque4_naranjillachain_smart_contract.html',hash:'',archivoLabel:'Blockchain real',icono:'file-code-2',iconBg:'bg-blue-100 text-blue-700',borde:'border-t-blue-600',desc:'Contrato compilado, probado con Solidity, desplegado en Sepolia y verificado en Etherscan.',tags:['Solidity','Sepolia','Verificado'],accion:'none'},
+   {id:'gemelo',titulo:'Gemelo Digital',archivo:'bloque5_naranjillachain_gemelo_digital.html',hash:'finca',archivoLabel:'Réplica virtual',icono:'scan-line',iconBg:'bg-emerald-100 text-emerald-700',borde:'border-t-emerald-600',desc:'Finca y cadena de frío replicadas con sensores, simulador de hectáreas, predicciones y QR.',tags:['IoT','Simulación','Predicción'],accion:'hash'}
+  ],
+  flujo:[
+   {nombre:'El Tema',color:'bg-emerald-600'},{nombre:'Branding',color:'bg-amber-500'},{nombre:'Gestión',color:'bg-sky-600'},
+   {nombre:'Web + Tienda',color:'bg-violet-600'},{nombre:'ERP + CRM',color:'bg-indigo-600'},
+   {nombre:'Smart Contract',color:'bg-blue-600'},{nombre:'Gemelo Digital',color:'bg-emerald-700'},{nombre:'Cliente',color:'bg-slate-700'}
+  ],
+  init(){this.refresh();},
+  refresh(){this.$nextTick(()=>{if(window.lucide)lucide.createIcons();});},
+  notify(t,m){this.toast={show:true,title:t,msg:m};clearTimeout(this._t);this._t=setTimeout(()=>this.toast.show=false,3600);},
+  abrir(m){
+   this.vistaActual=m; this.cargando=true;
+   const parts=m.archivo.split('#');
+   const hash=parts[1]?'#'+parts[1]:'';
+   this.urlFrame=parts[0]+'?sala='+(++this._seq)+hash;
+   this.notify('Abriendo '+m.titulo,'Cargando el módulo completo dentro de la sala.');
+   this.$nextTick(()=>this.refresh());
+  },
+  cerrarVista(){this.vistaActual=null;this.urlFrame='';this.cargando=false;this.refresh();},
+  onFrameLoad(){
+   this.cargando=false;
+   const m=this.vistaActual; if(!m) return;
+   const frame=document.querySelector('iframe');
+   if(!frame||!frame.contentWindow) return;
+   const ejecutar=()=>{
+    try{
+     const w=frame.contentWindow;
+     if(m.accion==='hash' && m.hash){ w.location.hash=m.hash; return true; }
+    }catch(e){}
+    return true;
+   };
+   setTimeout(ejecutar,150);
+   this.notify(m.titulo+' listo','Puede navegar dentro del módulo con normalidad.');
+  }
+ };
+}
+</script>
+</body>
+</html>
